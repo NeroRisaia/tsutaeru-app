@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ja" data-font="xl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#16324f">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="つたえる">
+<title>つたえる</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+  <header id="top">
+    <!-- 選んだ文の表示（タップでもう一度読む） -->
+    <button id="display" type="button" aria-live="polite" aria-label="表示中の言葉。タップでもう一度読みます">
+      <span id="displayText">ことばを えらんでください</span>
+    </button>
+    <!-- 固定帯：いつでも1タップ -->
+    <nav id="band" aria-label="いつでも使う言葉">
+      <button type="button" class="bandBtn yes" data-say="はい">はい</button>
+      <button type="button" class="bandBtn no" data-say="いいえ">いいえ</button>
+      <button type="button" class="bandBtn" data-say="わからない">わからない</button>
+      <button type="button" class="bandBtn" data-say="待って">待って</button>
+      <button type="button" class="bandBtn" data-say="もう一度">もう一度</button>
+      <button type="button" class="bandBtn thanks" data-say="ありがとう">ありがとう</button>
+    </nav>
+  </header>
+
+  <main id="main" tabindex="-1"></main>
+
+  <footer id="bottom">
+    <nav id="tabs" aria-label="カテゴリ"></nav>
+    <!-- 体の状態のあとに出る「場所」への誘導 -->
+    <div id="guide" hidden>
+      <button type="button" id="guideGo" class="guideGo">
+        <span class="guideMain">どこが？</span>
+        <span class="guideSub" id="guideSub">体の場所をえらぶ ▶</span>
+      </button>
+      <button type="button" id="guideClose" class="guideClose">とじる</button>
+    </div>
+  </footer>
+</div>
+
+<!-- 家族用設定（3秒長押しでのみ開く） -->
+<section id="settings" hidden aria-label="家族用設定">
+  <div class="setHead">
+    <h1>家族用 設定</h1>
+    <button type="button" id="setClose" class="setBtn primary">閉じる</button>
+  </div>
+  <div class="setBody">
+    <div class="note warn">
+      <h2>大切なお知らせ</h2>
+      <p>このアプリの「看護師さんを呼んで」ボタンは、言葉を声と文字で伝えるためのものです。<strong>ナースコールの代わりにはなりません。</strong>病院・施設のナースコールは必ず別に手の届く場所に置いてください。音が出ても、周りに人がいなければ届きません。</p>
+      <p>このアプリは、本人が自分で選んだ言葉だけを読み上げます。言いたいことを推測して代わりに話す機能はありません。</p>
+    </div>
+
+    <div class="note">
+      <h2>読み上げ（音声）について</h2>
+      <p id="voiceStatus">音声を確認しています…</p>
+      <p>日本語の音声が入っていないスマートフォンでは、声が出ないことがあります（文字の表示は出ます）。その場合は端末の設定で日本語の音声をダウンロードしてください。</p>
+      <p class="small">Android の例：設定 → システム → 言語と入力 → テキスト読み上げの出力 →「Google 音声サービス」の歯車 → 音声データをインストール → 日本語。<br>iPhone の例：設定 → アクセシビリティ → 読み上げコンテンツ → 声 → 日本語 → 声を選んでダウンロード。</p>
+      <div class="row">
+        <button type="button" class="setBtn" id="testVoice">ためしに読む</button>
+      </div>
+      <div class="row" role="group" aria-label="読む速さ">
+        <span class="lbl">読む速さ</span>
+        <button type="button" class="setBtn opt" data-rate="0.75">ゆっくり</button>
+        <button type="button" class="setBtn opt" data-rate="0.95">ふつう</button>
+        <button type="button" class="setBtn opt" data-rate="1.2">はやい</button>
+      </div>
+    </div>
+
+    <div class="note">
+      <h2>文字の大きさ</h2>
+      <div class="row" role="group" aria-label="文字の大きさ">
+        <button type="button" class="setBtn opt" data-font="l">大</button>
+        <button type="button" class="setBtn opt" data-font="xl">特大</button>
+      </div>
+    </div>
+
+    <div class="note">
+      <h2>言葉（フレーズ）の編集</h2>
+      <p class="small">ボタンの並び順はここで決めた順のまま固定されます。自動で並び替わるのは「よく使う」だけです。「場所につなぐ」に印をつけた言葉は、押したあとに「体の場所」へ誘導し、「足が痛い」のようにつないで読みます。</p>
+      <div class="row">
+        <span class="lbl">カテゴリ</span>
+        <select id="catSelect" class="setInput"></select>
+      </div>
+      <ul id="phraseList" class="phraseList"></ul>
+      <div class="row">
+        <input id="newPhrase" class="setInput grow" type="text" maxlength="40" placeholder="新しい言葉（例：足をさすって）" autocomplete="off">
+        <button type="button" class="setBtn primary" id="addPhrase">追加</button>
+      </div>
+      <p id="phraseMsg" class="msg" aria-live="polite"></p>
+    </div>
+
+    <div class="note">
+      <h2>カテゴリの追加</h2>
+      <div class="row">
+        <input id="newCat" class="setInput grow" type="text" maxlength="12" placeholder="カテゴリ名（例：趣味）" autocomplete="off">
+        <button type="button" class="setBtn primary" id="addCat">追加</button>
+      </div>
+      <div class="row">
+        <button type="button" class="setBtn danger" id="delCat">選択中のカテゴリを削除</button>
+      </div>
+      <p id="catMsg" class="msg" aria-live="polite"></p>
+    </div>
+
+    <div class="note">
+      <h2>使用回数</h2>
+      <p class="small">「よく使う」は、押された回数の多い言葉（最大6つ）を自動で表示します。</p>
+      <div class="row">
+        <button type="button" class="setBtn danger" id="resetCounts">使用回数をリセット</button>
+      </div>
+      <h2>初期状態に戻す</h2>
+      <p class="small">言葉とカテゴリを最初の状態に戻します（追加した言葉は消えます）。</p>
+      <div class="row">
+        <button type="button" class="setBtn danger" id="resetAll">言葉を初期状態に戻す</button>
+      </div>
+      <p id="resetMsg" class="msg" aria-live="polite"></p>
+    </div>
+
+    <div class="note">
+      <h2>このアプリについて</h2>
+      <p class="small">つたえる v<span id="ver"></span>。データはこの端末の中だけに保存され、インターネットには送信しません。一度開いたあとは、ネットがなくても動きます。</p>
+    </div>
+    <div class="row end">
+      <button type="button" id="setClose2" class="setBtn primary big">閉じる</button>
+    </div>
+  </div>
+</section>
+
+<script src="app.js"></script>
+</body>
+</html>

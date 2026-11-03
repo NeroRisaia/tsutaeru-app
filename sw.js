@@ -1,43 +1,13 @@
-/* つたえる Service Worker — 全ファイルをキャッシュし、2回目以降はネットなしで即起動 */
-var CACHE = 'tsutaeru-v1.0.2';
-var FILES = [
-  './',
-  './index.html',
-  './style.css',
-  './app.js',
-  './manifest.webmanifest',
-  './icons/icon-192.png',
-  './icons/icon-512.png',
-  './icons/icon-maskable-512.png'
-];
-
-self.addEventListener('install', function (e) {
-  e.waitUntil(
-    caches.open(CACHE).then(function (c) { return c.addAll(FILES); }).then(function () { return self.skipWaiting(); })
-  );
-});
+/* 移行用：以前ルート（/tsutaeru-app/）に登録されていた旧 Service Worker を解除するだけのファイル。
+   アプリ本体は app/ に移動し、app/sw.js が別のスコープで動きます。
+   旧版のキャッシュ（tsutaeru-v1.0.2）を消し、自分の登録を解除して、開いている画面を読み直します。 */
+self.addEventListener('install', function () { self.skipWaiting(); });
 
 self.addEventListener('activate', function (e) {
   e.waitUntil(
-    caches.keys().then(function (keys) {
-      return Promise.all(keys.filter(function (k) { return k !== CACHE; }).map(function (k) { return caches.delete(k); }));
-    }).then(function () { return self.clients.claim(); })
-  );
-});
-
-// キャッシュ優先（即起動）。キャッシュに無いものだけネットへ。
-self.addEventListener('fetch', function (e) {
-  var req = e.request;
-  if (req.method !== 'GET') return;
-  var url = new URL(req.url);
-  if (url.origin !== self.location.origin) return;
-  e.respondWith(
-    caches.match(req, { ignoreSearch: true }).then(function (hit) {
-      if (hit) return hit;
-      if (req.mode === 'navigate') {
-        return caches.match('./index.html').then(function (idx) { return idx || fetch(req); });
-      }
-      return fetch(req);
-    }).catch(function () { return caches.match('./index.html'); })
+    caches.delete('tsutaeru-v1.0.2')
+      .then(function () { return self.registration.unregister(); })
+      .then(function () { return self.clients.matchAll({ type: 'window' }); })
+      .then(function (list) { list.forEach(function (c) { c.navigate(c.url); }); })
   );
 });

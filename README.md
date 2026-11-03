@@ -11,14 +11,28 @@ May your days with your beloved partner and family be wonderful ones. I would be
 自分で選んだ言葉を、ボタンひとつで声と文字にして相手に伝えるためのアプリです。
 スマートフォンのブラウザで動き、ホーム画面に追加するとアプリのように使えます。一度開いたあとは、インターネットにつながっていなくても動きます。
 
+## ページの場所
+
+- 紹介ページ（日本語／English、デモ動画あり）：https://nerorisaia.github.io/tsutaeru-app/
+  - 英語で直接開く場合：https://nerorisaia.github.io/tsutaeru-app/?lang=en
+- アプリ本体：https://nerorisaia.github.io/tsutaeru-app/app/
+
 ## 入れ方
 
-1. スマートフォンのブラウザで、このアプリのページを開きます。
-   https://nerorisaia.github.io/tsutaeru-app/
-2. ブラウザのメニューから「ホーム画面に追加」を選びます。
+1. スマートフォンのブラウザで紹介ページを開き、「アプリを開く」ボタンを押します（アプリ本体のページ https://nerorisaia.github.io/tsutaeru-app/app/ を直接開いても同じです）。
+2. **アプリ本体のページを開いた状態で**、ブラウザのメニューから「ホーム画面に追加」を選びます。
    - Android（Chrome）：右上の「︙」→「ホーム画面に追加」または「アプリをインストール」
    - iPhone（Safari）：下の共有ボタン →「ホーム画面に追加」
 3. ホーム画面にできた「つたえる」のアイコンから起動します。
+
+紹介ページでは「ホーム画面に追加」をしないでください（紹介ページのショートカットになってしまいます）。
+
+## フォルダ構成
+
+- `index.html` … 紹介ページ
+- `app/` … アプリ本体（`index.html`, `app.js`, `style.css`, `sw.js`, `manifest.webmanifest`, `icons/`）
+- `media/` … デモ動画
+- `sw.js`（ルート）… 以前ルートで動いていた旧版の Service Worker を解除するための移行用ファイル
 
 ## 注意事項
 

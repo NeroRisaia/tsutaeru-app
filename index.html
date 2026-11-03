@@ -1,139 +1,299 @@
 <!DOCTYPE html>
-<html lang="ja" data-font="xl">
+<html lang="ja">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
-<meta name="theme-color" content="#16324f">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="つたえる">
-<title>つたえる</title>
-<link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" href="icons/icon-192.png">
-<link rel="apple-touch-icon" href="icons/icon-192.png">
-<link rel="stylesheet" href="style.css">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#fbf5ea">
+<title>つたえる ― 言葉が出なくなった人のための意思伝達アプリ</title>
+<meta name="description" content="脳梗塞などで、頭の中では分かっているのに言葉が出てこない。そんな人のために作った、無料の意思伝達アプリです。大きなボタンを押すだけで、選んだ言葉を音声と文字で伝えます。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="つたえる ― 言葉が出なくなった人のための意思伝達アプリ">
+<meta property="og:description" content="脳梗塞などで、頭の中では分かっているのに言葉が出てこない。そんな人のために作った、無料の意思伝達アプリです。大きなボタンを押すだけで、選んだ言葉を音声と文字で伝えます。">
+<meta property="og:url" content="https://nerorisaia.github.io/tsutaeru-app/">
+<meta property="og:image" content="https://nerorisaia.github.io/tsutaeru-app/app/icons/icon-512.png">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="app/icons/icon-192.png">
+<style>
+  :root {
+    --bg: #fbf5ea;
+    --card: #ffffff;
+    --ink: #1c1c1c;
+    --sub: #3d3a35;
+    --navy: #16324f;
+    --navy-hover: #0f243a;
+    --warm: #b5602a;
+    --msg-bg: #fff6e6;
+    --line: #e4d8c4;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Hiragino Maru Gothic ProN", "Hiragino Sans", "BIZ UDPGothic", "Meiryo", "Yu Gothic", "Noto Sans JP", system-ui, sans-serif;
+    font-size: 1.25rem;
+    line-height: 1.85;
+    word-break: auto-phrase;
+    overflow-wrap: anywhere;
+  }
+  .wrap {
+    max-width: 40rem;
+    margin: 0 auto;
+    padding: max(16px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) max(40px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
+  }
+  .bar { display: flex; justify-content: flex-end; padding-block: 4px 8px; }
+  .lang {
+    font: inherit; font-size: 1.05rem; font-weight: 700;
+    color: var(--navy); background: var(--card);
+    border: 2px solid var(--navy); border-radius: 999px;
+    min-height: 48px; padding: 4px 22px; cursor: pointer;
+  }
+  .lang:hover { background: #eef2f6; }
+  header.hero { text-align: center; padding-block: 8px 4px; }
+  .hero img { width: 96px; height: 96px; border-radius: 22px; box-shadow: 0 2px 10px rgba(0,0,0,.12); }
+  h1 { margin: 12px 0 8px; color: var(--navy); line-height: 1.35; }
+  h1 .name { display: block; font-size: 2.6rem; letter-spacing: .06em; }
+  h1 .sub { display: block; font-size: 1.3rem; font-weight: 700; color: var(--sub); margin-top: 4px; }
+  .lead { font-size: 1.3rem; margin: 16px 0 0; }
+  .message {
+    margin: 24px 0 0;
+    background: var(--msg-bg);
+    border: 2px solid #ecd2ab;
+    border-left: 8px solid var(--warm);
+    border-radius: 16px;
+    padding: 20px 20px 20px 22px;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #3a2a1a;
+    line-height: 1.9;
+  }
+  .cta { margin: 28px 0 8px; text-align: center; }
+  .open {
+    display: flex; align-items: center; justify-content: center; gap: .5em;
+    width: 100%; min-height: 76px; padding: 14px 20px;
+    background: var(--navy); color: #fff; text-decoration: none;
+    font-size: 1.6rem; font-weight: 800; letter-spacing: .04em;
+    border-radius: 18px; box-shadow: 0 4px 0 #0a1a2a;
+  }
+  .open:hover { background: var(--navy-hover); }
+  .open:active { transform: translateY(2px); box-shadow: 0 2px 0 #0a1a2a; }
+  .open .arrow { font-size: 1.3em; line-height: 1; }
+  a:focus-visible, button:focus-visible { outline: 4px solid #f2a83b; outline-offset: 3px; }
+  section.card {
+    background: var(--card);
+    border: 2px solid var(--line);
+    border-radius: 18px;
+    padding: 18px 20px 20px;
+    margin: 22px 0 0;
+  }
+  h2 {
+    margin: 0 0 10px; font-size: 1.5rem; color: var(--navy); line-height: 1.4;
+    padding-bottom: 6px; border-bottom: 3px solid #f0e3cd;
+  }
+  .card p { margin: 0; }
+  ul, ol { margin: 0; padding-left: 1.4em; }
+  li { margin: 6px 0; padding-left: .2em; }
+  li::marker { color: var(--warm); font-weight: 800; }
+  ul.notes li { font-weight: 600; }
+  .video { text-align: center; }
+  video {
+    display: block; margin: 4px auto 0;
+    width: 100%; max-width: 340px; aspect-ratio: 9 / 16; height: auto;
+    background: #13212f; border-radius: 16px;
+  }
+  .card a { color: #0b4d8c; font-weight: 700; text-decoration-thickness: 2px; text-underline-offset: 3px; }
+  @media (max-width: 380px) {
+    body { font-size: 1.15rem; }
+    h1 .name { font-size: 2.2rem; }
+    .open { font-size: 1.4rem; }
+  }
+</style>
 </head>
 <body>
-<div id="app">
-  <header id="top">
-    <!-- 選んだ文の表示（タップでもう一度読む） -->
-    <button id="display" type="button" aria-live="polite" aria-label="表示中の言葉。タップでもう一度読みます">
-      <span id="displayText">ことばを えらんでください</span>
-    </button>
-    <!-- 固定帯：いつでも1タップ -->
-    <nav id="band" aria-label="いつでも使う言葉">
-      <button type="button" class="bandBtn yes" data-say="はい">はい</button>
-      <button type="button" class="bandBtn no" data-say="いいえ">いいえ</button>
-      <button type="button" class="bandBtn" data-say="わからない">わからない</button>
-      <button type="button" class="bandBtn" data-say="待って">待って</button>
-      <button type="button" class="bandBtn" data-say="もう一度">もう一度</button>
-      <button type="button" class="bandBtn thanks" data-say="ありがとう">ありがとう</button>
-    </nav>
-  </header>
+<div class="wrap">
+  <div class="bar">
+    <button type="button" class="lang" id="langBtn" lang="en">English</button>
+  </div>
 
-  <main id="main" tabindex="-1"></main>
+  <!-- ===== 日本語 ===== -->
+  <main id="ja" lang="ja">
+    <header class="hero">
+      <img src="app/icons/icon-192.png" alt="" width="96" height="96">
+      <h1><span class="name">つたえる</span><span class="sep"> </span><span class="sub">― 言葉が出なくなった人のための意思伝達アプリ</span></h1>
+    </header>
 
-  <footer id="bottom">
-    <nav id="tabs" aria-label="カテゴリ"></nav>
-    <!-- 体の状態のあとに出る「場所」への誘導 -->
-    <div id="guide" hidden>
-      <button type="button" id="guideGo" class="guideGo">
-        <span class="guideMain">どこが？</span>
-        <span class="guideSub" id="guideSub">体の場所をえらぶ ▶</span>
-      </button>
-      <button type="button" id="guideClose" class="guideClose">とじる</button>
-    </div>
-  </footer>
+    <p class="lead">脳梗塞などで、頭の中では分かっているのに言葉が出てこない。そんな人のために作った、無料の意思伝達アプリです。大きなボタンを押すだけで、選んだ言葉を音声と文字で伝えます。</p>
+
+    <p class="message">このアプリが、言葉を失ったご本人の「伝えたい」という気持ちを支え、生きる希望につながりますように。そして、そばで支えるご家族の心が、少しでも軽くなりますように。大切なパートナーやご家族と過ごす日々が、素晴らしい毎日でありますように。そのお役に立てれば幸いです。</p>
+
+    <div class="cta"><a class="open" href="app/">アプリを開く <span class="arrow" aria-hidden="true">▶</span></a></div>
+
+    <section class="card video">
+      <h2>デモ動画</h2>
+      <video controls playsinline preload="metadata" poster="media/demo-poster.jpg">
+        <source src="media/demo.mp4" type="video/mp4">
+      </video>
+    </section>
+
+    <section class="card">
+      <h2>生まれた理由</h2>
+      <p>大切な人が脳梗塞で倒れ、言葉を発することができなくなりました。市販の専用機器は高額で、誰もがすぐに使えるものではありません。お金ではなく気持ちで何かできないかと、日本と世界の当事者の声や実践を調べ、その立場に立って作った試作品です。</p>
+    </section>
+
+    <section class="card">
+      <h2>特徴</h2>
+      <ul>
+        <li>「はい／いいえ」など、よく使う言葉の大きなボタン</li>
+        <li>「痛い」から体の場所まで、2タップで伝える仕組み</li>
+        <li>50音表で、載っていない言葉も作れる</li>
+        <li>よく使う言葉が前に出る</li>
+        <li>インターネットなしでも動作します（オフライン対応）</li>
+        <li>入力した言葉は端末の中だけに保存され、外部に送信されません</li>
+        <li>完全無料、広告なし</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>使い方</h2>
+      <ol>
+        <li>下のボタンからアプリを開く</li>
+        <li>ブラウザのメニューから「ホーム画面に追加」</li>
+        <li>ホーム画面のアイコンからいつでも開けます</li>
+      </ol>
+    </section>
+
+    <div class="cta"><a class="open" href="app/">アプリを開く <span class="arrow" aria-hidden="true">▶</span></a></div>
+
+    <section class="card">
+      <h2>お願いと注意</h2>
+      <ul class="notes">
+        <li>まだ試作品です。至らない点や失礼な表現があれば、ぜひ教えてください</li>
+        <li>このアプリはナースコールの代わりにはなりません。緊急の呼び出しには必ずナースコールを使ってください</li>
+        <li>医療機器ではありません</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>フィードバック</h2>
+      <p>Xの投稿 <a href="https://x.com/MattinoLuna/status/2117504379297390952" target="_blank" rel="noopener">https://x.com/MattinoLuna/status/2117504379297390952</a> への返信、またはDMでご連絡ください。同じ苦しさを抱える方へ、無料でお渡しします。</p>
+    </section>
+  </main>
+
+  <!-- ===== English ===== -->
+  <main id="en" lang="en" hidden>
+    <header class="hero">
+      <img src="app/icons/icon-192.png" alt="" width="96" height="96">
+      <h1><span class="name">Tsutaeru</span><span class="sep"> </span><span class="sub">— a free communication app for people who have lost their speech</span></h1>
+    </header>
+
+    <p class="lead">After a stroke, many people know exactly what they want to say — but the words won't come out. With Tsutaeru, they tap large buttons, and the chosen words are spoken aloud and shown as text.</p>
+
+    <p class="message">May this app help those who have lost their speech hold on to hope, and live each day in their own way. May it also lighten, even a little, the hearts of the families who stand beside them. May your days with your beloved partner and family be wonderful ones. I would be honored if this small tool can help, even in a small way.</p>
+
+    <div class="cta"><a class="open" href="app/">Open the app <span class="arrow" aria-hidden="true">▶</span></a></div>
+
+    <section class="card video">
+      <h2>Demo video</h2>
+      <video controls playsinline preload="metadata" poster="media/demo-poster.jpg">
+        <source src="media/demo.mp4" type="video/mp4">
+      </video>
+    </section>
+
+    <section class="card">
+      <h2>Why I made it</h2>
+      <p>Someone dear to me had a stroke and lost the ability to speak. Dedicated commercial devices can be very expensive, so not everyone can use one right away. I researched the voices and real-world practices of survivors in Japan and around the world, and built this prototype from their standpoint — from the heart, not for money.</p>
+    </section>
+
+    <section class="card">
+      <h2>Features</h2>
+      <ul>
+        <li>Large buttons for everyday words like "yes" and "no"</li>
+        <li>Two taps from "it hurts" to the body part</li>
+        <li>A Japanese syllabary board to compose words that are not listed</li>
+        <li>Frequently used words move to the front</li>
+        <li>Works without internet (offline support)</li>
+        <li>Words are stored only on the device and are never sent anywhere</li>
+        <li>Completely free, no ads</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>How to use</h2>
+      <ol>
+        <li>Open the app from the button below.</li>
+        <li>In your browser menu, tap "Add to Home screen".</li>
+        <li>Launch it from the home-screen icon anytime.</li>
+      </ol>
+    </section>
+
+    <div class="cta"><a class="open" href="app/">Open the app <span class="arrow" aria-hidden="true">▶</span></a></div>
+
+    <section class="card">
+      <h2>Notes</h2>
+      <ul class="notes">
+        <li>This is a prototype. Feedback about anything unclear or impolite is very welcome.</li>
+        <li>This app is NOT a substitute for a nurse call. Always use the nurse call for emergencies.</li>
+        <li>It is not a medical device.</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>Feedback</h2>
+      <p>Reply to the X post (<a href="https://x.com/MattinoLuna/status/2117504379297390952" target="_blank" rel="noopener">https://x.com/MattinoLuna/status/2117504379297390952</a>) or send a DM. The app is free for anyone who needs it.</p>
+    </section>
+  </main>
 </div>
 
-<!-- 家族用設定（3秒長押しでのみ開く） -->
-<section id="settings" hidden aria-label="家族用設定">
-  <div class="setHead">
-    <h1>家族用 設定</h1>
-    <button type="button" id="setClose" class="setBtn primary">閉じる</button>
-  </div>
-  <div class="setBody">
-    <div class="note warn">
-      <h2>大切なお知らせ</h2>
-      <p>このアプリの「看護師さんを呼んで」ボタンは、言葉を声と文字で伝えるためのものです。<strong>ナースコールの代わりにはなりません。</strong>病院・施設のナースコールは必ず別に手の届く場所に置いてください。音が出ても、周りに人がいなければ届きません。</p>
-      <p>このアプリは、本人が自分で選んだ言葉だけを読み上げます。言いたいことを推測して代わりに話す機能はありません。</p>
-    </div>
+<script>
+(function () {
+  var TITLES = {
+    ja: 'つたえる ― 言葉が出なくなった人のための意思伝達アプリ',
+    en: 'Tsutaeru — a free communication app for people who have lost their speech'
+  };
+  var ja = document.getElementById('ja');
+  var en = document.getElementById('en');
+  var btn = document.getElementById('langBtn');
 
-    <div class="note">
-      <h2>読み上げ（音声）について</h2>
-      <p id="voiceStatus">音声を確認しています…</p>
-      <p>日本語の音声が入っていないスマートフォンでは、声が出ないことがあります（文字の表示は出ます）。その場合は端末の設定で日本語の音声をダウンロードしてください。</p>
-      <p class="small">Android の例：設定 → システム → 言語と入力 → テキスト読み上げの出力 →「Google 音声サービス」の歯車 → 音声データをインストール → 日本語。<br>iPhone の例：設定 → アクセシビリティ → 読み上げコンテンツ → 声 → 日本語 → 声を選んでダウンロード。</p>
-      <div class="row">
-        <button type="button" class="setBtn" id="testVoice">ためしに読む</button>
-      </div>
-      <div class="row" role="group" aria-label="読む速さ">
-        <span class="lbl">読む速さ</span>
-        <button type="button" class="setBtn opt" data-rate="0.75">ゆっくり</button>
-        <button type="button" class="setBtn opt" data-rate="0.95">ふつう</button>
-        <button type="button" class="setBtn opt" data-rate="1.2">はやい</button>
-      </div>
-    </div>
+  function save(l) { try { localStorage.setItem('tsutaeru-front-lang', l); } catch (e) {} }
+  function saved() { try { return localStorage.getItem('tsutaeru-front-lang'); } catch (e) { return null; } }
 
-    <div class="note">
-      <h2>文字の大きさ</h2>
-      <div class="row" role="group" aria-label="文字の大きさ">
-        <button type="button" class="setBtn opt" data-font="l">大</button>
-        <button type="button" class="setBtn opt" data-font="xl">特大</button>
-      </div>
-    </div>
+  function apply(l, push) {
+    var isEn = l === 'en';
+    ja.hidden = isEn;
+    en.hidden = !isEn;
+    document.documentElement.lang = isEn ? 'en' : 'ja';
+    document.title = TITLES[isEn ? 'en' : 'ja'];
+    btn.textContent = isEn ? '日本語' : 'English';
+    btn.lang = isEn ? 'ja' : 'en';
+    // 片方の動画を止める
+    var other = (isEn ? ja : en).querySelector('video');
+    if (other) other.pause();
+    if (push) {
+      try {
+        var u = new URL(location.href);
+        if (isEn) u.searchParams.set('lang', 'en'); else u.searchParams.delete('lang');
+        history.replaceState(null, '', u.pathname + u.search + u.hash);
+      } catch (e) {}
+    }
+  }
 
-    <div class="note">
-      <h2>言葉（フレーズ）の編集</h2>
-      <p class="small">ボタンの並び順はここで決めた順のまま固定されます。自動で並び替わるのは「よく使う」だけです。「場所につなぐ」に印をつけた言葉は、押したあとに「体の場所」へ誘導し、「足が痛い」のようにつないで読みます。</p>
-      <div class="row">
-        <span class="lbl">カテゴリ</span>
-        <select id="catSelect" class="setInput"></select>
-      </div>
-      <ul id="phraseList" class="phraseList"></ul>
-      <div class="row">
-        <input id="newPhrase" class="setInput grow" type="text" maxlength="40" placeholder="新しい言葉（例：足をさすって）" autocomplete="off">
-        <button type="button" class="setBtn primary" id="addPhrase">追加</button>
-      </div>
-      <p id="phraseMsg" class="msg" aria-live="polite"></p>
-    </div>
+  var p = null;
+  try { p = new URLSearchParams(location.search).get('lang'); } catch (e) {}
+  var start;
+  if (p === 'en' || p === 'ja') start = p;
+  else if (saved() === 'en' || saved() === 'ja') start = saved();
+  else start = /^ja\b/i.test(navigator.language || 'ja') ? 'ja' : 'en';
+  apply(start, false);
 
-    <div class="note">
-      <h2>カテゴリの追加</h2>
-      <div class="row">
-        <input id="newCat" class="setInput grow" type="text" maxlength="12" placeholder="カテゴリ名（例：趣味）" autocomplete="off">
-        <button type="button" class="setBtn primary" id="addCat">追加</button>
-      </div>
-      <div class="row">
-        <button type="button" class="setBtn danger" id="delCat">選択中のカテゴリを削除</button>
-      </div>
-      <p id="catMsg" class="msg" aria-live="polite"></p>
-    </div>
-
-    <div class="note">
-      <h2>使用回数</h2>
-      <p class="small">「よく使う」は、押された回数の多い言葉（最大6つ）を自動で表示します。</p>
-      <div class="row">
-        <button type="button" class="setBtn danger" id="resetCounts">使用回数をリセット</button>
-      </div>
-      <h2>初期状態に戻す</h2>
-      <p class="small">言葉とカテゴリを最初の状態に戻します（追加した言葉は消えます）。</p>
-      <div class="row">
-        <button type="button" class="setBtn danger" id="resetAll">言葉を初期状態に戻す</button>
-      </div>
-      <p id="resetMsg" class="msg" aria-live="polite"></p>
-    </div>
-
-    <div class="note">
-      <h2>このアプリについて</h2>
-      <p class="small">つたえる v<span id="ver"></span>。データはこの端末の中だけに保存され、インターネットには送信しません。一度開いたあとは、ネットがなくても動きます。</p>
-    </div>
-    <div class="row end">
-      <button type="button" id="setClose2" class="setBtn primary big">閉じる</button>
-    </div>
-  </div>
-</section>
-
-<script src="app.js"></script>
+  btn.addEventListener('click', function () {
+    var next = en.hidden ? 'en' : 'ja';
+    save(next);
+    apply(next, true);
+    window.scrollTo(0, 0);
+  });
+})();
+</script>
 </body>
 </html>
