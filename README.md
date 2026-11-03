@@ -1,5 +1,13 @@
 # つたえる
 
+このアプリが、言葉を失ったご本人の「伝えたい」という気持ちを支え、生きる希望につながりますように。そして、そばで支えるご家族の心が、少しでも軽くなりますように。
+
+大切なパートナーやご家族と過ごす日々が、素晴らしい毎日でありますように。そのお役に立てれば幸いです。
+
+May this app help those who have lost their speech hold on to hope, and live each day in their own way. May it also lighten, even a little, the hearts of the families who stand beside them.
+
+May your days with your beloved partner and family be wonderful ones. I would be honored if this small tool can help, even in a small way.
+
 自分で選んだ言葉を、ボタンひとつで声と文字にして相手に伝えるためのアプリです。
 スマートフォンのブラウザで動き、ホーム画面に追加するとアプリのように使えます。一度開いたあとは、インターネットにつながっていなくても動きます。
 
